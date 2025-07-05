@@ -19,7 +19,6 @@ export async function generateCommand(request, execute) {
   }
 
   const history = getHistory();
-  console.log(history);
 
   history.push({ role: "user", content: request });
   history.unshift({
