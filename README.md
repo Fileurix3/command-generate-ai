@@ -17,9 +17,20 @@ CLI name: `cgai`
 
    Example:
    - input: `--req "create a main.py file"`
-   - output: `touch main.py` *(this is a sample answer, it may be different)*
+   - output: `touch main.py` _(this is a sample answer, it may be different)_
 
-2. `-m, --model`:
+2. `-e, --execute`:
+
+   to execute the command immediately.
+
+   > use with `-r, --req`
+
+   > doesn't support some commands such as `cd`
+
+   Example:
+   - input: `--req "create a main.py file" --execute`
+
+3. `-m, --model`:
 
    Set your ollama model.
 
