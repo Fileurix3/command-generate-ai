@@ -5,11 +5,6 @@ import chalk from "chalk";
 import util from "util";
 import fs from "fs";
 
-const rl = readline.createInterface({
-  input: process.stdin,
-  output: process.stdout,
-});
-
 export async function generateCommand(request, execute) {
   if (!fs.existsSync(CONFIG_FILE_PATH)) {
     throw "config file `~/.config/cgai/config.json' not found";
@@ -42,24 +37,21 @@ export async function generateCommand(request, execute) {
     throw response_data.error;
   }
 
-  const command = response_data.response.toString();
-
-  let validateCommand;
+  let command = response_data.response.toString();
 
   if (
     (command.startsWith("'") && command.endsWith("'")) ||
     (command.startsWith("`") && command.endsWith("`")) ||
-    (command.startsWith('"') && command.endsWith('"'))
+    (command.startsWith('"') && command.endsWith('"')) ||
+    (command.startsWith("```") && command.endsWith("```"))
   ) {
-    validateCommand = command.slice(1, -1);
-  } else {
-    validateCommand = command;
+    command = command.slice(1, -1);
   }
 
-  console.log(chalk.bold(validateCommand));
+  console.log(chalk.bold(command));
 
   if (execute) {
-    await executeCommand(validateCommand);
+    await executeCommand(command);
   }
 }
 
@@ -77,6 +69,11 @@ async function executeCommand(command) {
 }
 
 function askYesNo() {
+  const rl = readline.createInterface({
+    input: process.stdin,
+    output: process.stdout,
+  });
+
   return new Promise((resolve) => {
     rl.question("Execute command (y/n): ", (data) => {
       const answer = data.trim().toLowerCase();
@@ -88,6 +85,7 @@ function askYesNo() {
         resolve(false);
       } else {
         console.log("Enter 'y' or 'n'");
+        rl.close();
         resolve(askYesNo());
       }
     });
