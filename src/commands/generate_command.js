@@ -18,14 +18,23 @@ export async function generateCommand(request, execute) {
     throw "Model not found, add your model using the '--model <model>' command";
   }
 
-  const history = getHistory();
+  let message;
 
-  history.push({ role: "user", content: request });
-  history.unshift({
+  const userContent = { role: "user", content: request };
+  const systemContent = {
     role: "system",
     content:
       "you only respond with linux commands, which will be on a single line so that they can be entered directly into the terminal",
-  });
+  };
+
+  if (config.enableHistory === true) {
+    message = getHistory();
+
+    message.push(userContent);
+    message.unshift(systemContent);
+  } else {
+    message = [systemContent, userContent];
+  }
 
   const response = await fetch("http://localhost:11434/api/chat", {
     method: "POST",
@@ -34,7 +43,7 @@ export async function generateCommand(request, execute) {
     },
     body: JSON.stringify({
       model: config.model,
-      messages: history,
+      messages: message,
       stream: false,
     }),
   });
