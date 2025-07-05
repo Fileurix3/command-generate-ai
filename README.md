@@ -37,6 +37,13 @@ CLI name: `cgai`
    Example:
    - input: `--model ollama3`
 
+4. `--history`:
+
+   Switch the message history on or off.
+
+   Example:
+   - input: `--history true` or `--history false`
+
 ## Install
 
 **You should install `nodejs`, `ollama` and any `ollama model`**
