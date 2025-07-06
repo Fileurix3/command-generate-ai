@@ -54,17 +54,7 @@ export async function generateCommand(request, execute) {
     throw response_data.error;
   }
 
-  let command = response_data.message.content.toString();
-
-  if (
-    (command.startsWith("'") && command.endsWith("'")) ||
-    (command.startsWith("`") && command.endsWith("`")) ||
-    (command.startsWith('"') && command.endsWith('"')) ||
-    (command.startsWith("```") && command.endsWith("```")) ||
-    (command.startsWith("```bash") && command.endsWith("```"))
-  ) {
-    command = command.slice(1, -1);
-  }
+  let command = validateCommand(response_data.message.content.toString());
 
   console.log(chalk.bold(command));
 
@@ -110,4 +100,22 @@ function askYesNo() {
       }
     });
   });
+}
+
+function validateCommand(command) {
+  let trimCommand = command.trim();
+
+  if (trimCommand.startsWith("```bash") && trimCommand.endsWith("```")) {
+    return trimCommand.slice(7, -3);
+  } else if (trimCommand.startsWith("```") && trimCommand.endsWith("```")) {
+    return trimCommand.slice(3, -3);
+  } else if (
+    (trimCommand.startsWith("'") && trimCommand.endsWith("'")) ||
+    (trimCommand.startsWith("`") && trimCommand.endsWith("`")) ||
+    (trimCommand.startsWith('"') && trimCommand.endsWith('"'))
+  ) {
+    return trimCommand.slice(1, -1);
+  }
+
+  return trimCommand;
 }
