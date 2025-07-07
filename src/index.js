@@ -13,7 +13,7 @@ program
   .option("-r, --req <string>", "your request for generate command")
   .option("-m, --model <string>", "set your ollama model")
   .option("-e, --execute", "to execute the command immediately")
-  .option("--history <string>", "enable or disable history")
+  .option("--history <string>", "enable or disable history");
 
 program.parse(process.argv);
 const option = program.opts();

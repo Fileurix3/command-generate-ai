@@ -45,7 +45,6 @@ export function enableOrDisableHistory(enable) {
 
   const config = data === "" ? {} : JSON.parse(data);
 
-
   if (enable === true) {
     config.enableHistory = true;
   } else if (enable === false) {
