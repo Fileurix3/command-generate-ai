@@ -1,5 +1,5 @@
+import { HISTORY_FILE_PATH, CONFIG_FILE_PATH } from "../global_variables.js";
 import fs from "fs";
-import { HISTORY_FILE_PATH } from "../global_variables.js";
 
 export function getHistory() {
   createFileIfNotExists();
@@ -22,7 +22,9 @@ export function addHistory(prompt, response) {
 
   history.push(...historyData);
 
-  if (history.length > 5 * 2) {
+  const MAX_LENGTH_HISTORY = 10;
+
+  if (history.length > MAX_LENGTH_HISTORY * 2) {
     history.shift();
     history.shift();
   }
@@ -32,6 +34,27 @@ export function addHistory(prompt, response) {
     JSON.stringify(history, null, 2),
     "utf-8",
   );
+}
+
+export function enableOrDisableHistory(enable) {
+  if (!fs.existsSync(CONFIG_FILE_PATH)) {
+    throw "config file `~/.config/cgai/config.json' not found";
+  }
+
+  const data = fs.readFileSync(CONFIG_FILE_PATH, "utf-8");
+
+  const config = data === "" ? {} : JSON.parse(data);
+
+
+  if (enable === true) {
+    config.enableHistory = true;
+  } else if (enable === false) {
+    config.enableHistory = false;
+  }
+
+  fs.writeFileSync(CONFIG_FILE_PATH, JSON.stringify(config, null, 2), "utf-8");
+
+  console.log(`Enable history ${enable}`);
 }
 
 function createFileIfNotExists() {

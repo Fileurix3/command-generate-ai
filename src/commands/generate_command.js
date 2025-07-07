@@ -1,5 +1,5 @@
 import { CONFIG_FILE_PATH } from "../global_variables.js";
-import { addHistory, getHistory } from "./message_history.js";
+import { addHistory, getHistory } from "./history.js";
 import { exec } from "child_process";
 import readline from "readline";
 import chalk from "chalk";
@@ -58,7 +58,9 @@ export async function generateCommand(request, execute) {
 
   console.log(chalk.bold(command));
 
-  addHistory(request, command);
+  if (config.enableHistory === true) {
+    addHistory(request, command);
+  }
 
   if (execute) {
     await executeCommand(command);
