@@ -1,4 +1,4 @@
-import { CONFIG_FILE_PATH } from "../global_variables.js";
+import { CONFIG_FILE_PATH, SYSTEM_CONTENT } from "../global_variables.js";
 import { addHistory, getHistory } from "./history.js";
 import { exec } from "child_process";
 import readline from "readline";
@@ -21,19 +21,14 @@ export async function generateCommand(request, execute) {
   let message;
 
   const userContent = { role: "user", content: request };
-  const systemContent = {
-    role: "system",
-    content:
-      "you only respond with linux commands, which will be on a single line so that they can be entered directly into the terminal",
-  };
 
   if (config.enableHistory === true) {
     message = getHistory();
 
     message.push(userContent);
-    message.unshift(systemContent);
+    message.unshift(SYSTEM_CONTENT);
   } else {
-    message = [systemContent, userContent];
+    message = [SYSTEM_CONTENT, userContent];
   }
 
   const response = await fetch("http://localhost:11434/api/chat", {
